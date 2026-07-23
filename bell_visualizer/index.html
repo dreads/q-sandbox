@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Bell state density matrix explorer</title>
+<meta name="description" content="An interactive greyscale density matrix for the four Bell states, with dephasing and amplitude balance controls.">
+<link rel="stylesheet" href="src/styles.css">
+</head>
+<body>
+<div class="shell">
+
+<header>
+  <h1>Bell state density matrix</h1>
+  <p class="subtitle">
+    Two qubits through a Hadamard and a CNOT. Set the input bits, then watch the
+    density matrix respond to dephasing and to an imbalance in the amplitudes.
+  </p>
+</header>
+
+<div class="layout">
+
+  <div id="grid" aria-live="off"></div>
+
+  <div>
+    <p class="state-line" id="state-label">|Φ⁺⟩</p>
+
+    <fieldset>
+      <legend>Input state</legend>
+      <div class="pair">
+        <button type="button" id="q0" aria-pressed="false">q0 = 0</button>
+        <button type="button" id="q1" aria-pressed="false">q1 = 0</button>
+      </div>
+      <p class="coupling">↕ same two bits ↕</p>
+      <div class="pair">
+        <button type="button" id="phase" aria-pressed="false">phase +</button>
+        <button type="button" id="family" aria-pressed="false">Φ family</button>
+      </div>
+    </fieldset>
+
+    <fieldset>
+      <legend>Channel</legend>
+      <div class="slider-row">
+        <label for="dephasing">Dephasing</label>
+        <input type="range" id="dephasing" min="0" max="100" step="1" value="0">
+        <output id="dephasing-value" for="dephasing">0%</output>
+      </div>
+      <div class="slider-row">
+        <label for="theta">Balance θ</label>
+        <input type="range" id="theta" min="0" max="90" step="1" value="45">
+        <output id="theta-value" for="theta">45°</output>
+      </div>
+    </fieldset>
+
+    <div class="readouts">
+      <div class="readout">
+        <div class="label">Concurrence</div>
+        <div class="value" id="concurrence">1.00</div>
+      </div>
+      <div class="readout">
+        <div class="label">Purity</div>
+        <div class="value" id="purity">1.00</div>
+      </div>
+    </div>
+
+    <p class="reading" id="reading" aria-live="polite"></p>
+  </div>
+</div>
+
+<div class="key">
+  <span class="key-item">
+    <svg width="26" height="26" aria-hidden="true"><rect width="26" height="26" class="cell" fill-opacity="0.62"/></svg>
+    large magnitude
+  </span>
+  <span class="key-item">
+    <svg width="26" height="26" aria-hidden="true"><rect width="26" height="26" class="cell" fill-opacity="0.26"/></svg>
+    small magnitude
+  </span>
+  <span class="key-item">
+    <svg width="26" height="26" aria-hidden="true" class="gridlines"><rect x="0.5" y="0.5" width="25" height="25"/></svg>
+    zero
+  </span>
+  <span class="key-item">
+    <svg width="26" height="26" aria-hidden="true"><rect width="26" height="26" class="cell" fill-opacity="0.62"/><rect x="6" y="11" width="14" height="4" class="sign-bar"/></svg>
+    negative
+  </span>
+</div>
+
+<footer>
+  <p>
+    Rows and columns run 00, 01, 10, 11. Diagonal entries are measurement
+    probabilities; off-diagonal entries are coherences.
+  </p>
+</footer>
+
+</div>
+<script type="module" src="src/app.js"></script>
+</body>
+</html>

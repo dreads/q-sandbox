@@ -1,0 +1,264 @@
+:root {
+  --ink: #17171a;
+  --ink-soft: #56565e;
+  --ink-faint: #8a8a93;
+  --paper: #fbfaf7;
+  --paper-raised: #ffffff;
+  --rule: rgba(23, 23, 26, 0.14);
+  --rule-strong: rgba(23, 23, 26, 0.3);
+  --focus: #2f5fa8;
+  --font-body: ui-sans-serif, system-ui, -apple-system, "Segoe UI", sans-serif;
+  --font-data: ui-monospace, "SF Mono", "Cascadia Mono", Menlo, monospace;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --ink: #eceae4;
+    --ink-soft: #a4a29b;
+    --ink-faint: #74736e;
+    --paper: #16161a;
+    --paper-raised: #1e1e23;
+    --rule: rgba(236, 234, 228, 0.16);
+    --rule-strong: rgba(236, 234, 228, 0.32);
+    --focus: #7aa8e8;
+  }
+}
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  padding: 3rem 1.5rem 4rem;
+  background: var(--paper);
+  color: var(--ink);
+  font-family: var(--font-body);
+  line-height: 1.6;
+  -webkit-font-smoothing: antialiased;
+}
+
+.shell {
+  max-width: 62rem;
+  margin: 0 auto;
+}
+
+header {
+  border-bottom: 1px solid var(--rule);
+  padding-bottom: 1.5rem;
+  margin-bottom: 2rem;
+}
+
+h1 {
+  font-size: 1.5rem;
+  font-weight: 500;
+  letter-spacing: -0.01em;
+  margin: 0 0 0.4rem;
+}
+
+.subtitle {
+  margin: 0;
+  color: var(--ink-soft);
+  font-size: 0.95rem;
+  max-width: 46rem;
+}
+
+.layout {
+  display: grid;
+  grid-template-columns: minmax(0, 20rem) minmax(0, 1fr);
+  gap: 2.5rem;
+  align-items: start;
+}
+
+@media (max-width: 46rem) {
+  .layout {
+    grid-template-columns: minmax(0, 1fr);
+    gap: 2rem;
+  }
+}
+
+.tick {
+  font-family: var(--font-data);
+  font-size: 12px;
+  fill: var(--ink-faint);
+}
+
+.cell {
+  fill: var(--ink);
+}
+
+.sign-bar {
+  fill: var(--paper);
+}
+
+.gridlines rect,
+.gridlines line {
+  fill: none;
+  stroke: var(--rule);
+  stroke-width: 1;
+}
+
+fieldset {
+  border: none;
+  padding: 0;
+  margin: 0 0 1.75rem;
+}
+
+legend {
+  padding: 0;
+  font-size: 0.78rem;
+  letter-spacing: 0.07em;
+  text-transform: uppercase;
+  color: var(--ink-faint);
+  margin-bottom: 0.6rem;
+}
+
+.pair {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 0.5rem;
+}
+
+.coupling {
+  text-align: center;
+  font-size: 0.75rem;
+  color: var(--ink-faint);
+  margin: 0.45rem 0;
+  font-family: var(--font-data);
+}
+
+button {
+  font-family: var(--font-data);
+  font-size: 0.85rem;
+  color: var(--ink);
+  background: var(--paper-raised);
+  border: 1px solid var(--rule-strong);
+  border-radius: 3px;
+  padding: 0.55rem 0.5rem;
+  cursor: pointer;
+  transition: background 120ms ease, border-color 120ms ease;
+}
+
+button:hover {
+  border-color: var(--ink-soft);
+}
+
+button[aria-pressed="true"] {
+  background: var(--ink);
+  color: var(--paper);
+  border-color: var(--ink);
+}
+
+.slider-row {
+  display: grid;
+  grid-template-columns: 5.5rem 1fr 3rem;
+  align-items: center;
+  gap: 0.75rem;
+  margin-bottom: 0.9rem;
+}
+
+.slider-row label {
+  font-size: 0.85rem;
+  color: var(--ink-soft);
+}
+
+.slider-row output {
+  font-family: var(--font-data);
+  font-size: 0.85rem;
+  text-align: right;
+}
+
+input[type="range"] {
+  width: 100%;
+  accent-color: var(--ink);
+}
+
+:focus-visible {
+  outline: 2px solid var(--focus);
+  outline-offset: 2px;
+}
+
+.readouts {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 0.75rem;
+  margin-bottom: 1.25rem;
+}
+
+.readout {
+  border: 1px solid var(--rule);
+  border-radius: 3px;
+  padding: 0.7rem 0.85rem;
+}
+
+.readout .label {
+  font-size: 0.75rem;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--ink-faint);
+}
+
+.readout .value {
+  font-family: var(--font-data);
+  font-size: 1.5rem;
+  line-height: 1.3;
+}
+
+.state-line {
+  font-family: var(--font-data);
+  font-size: 1.75rem;
+  margin: 0 0 1rem;
+}
+
+.reading {
+  font-size: 0.9rem;
+  color: var(--ink-soft);
+  border-left: 2px solid var(--rule-strong);
+  padding-left: 0.9rem;
+  margin: 0 0 1.75rem;
+  min-height: 3.2rem;
+}
+
+.key {
+  border-top: 1px solid var(--rule);
+  padding-top: 1.25rem;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1.25rem;
+  font-size: 0.85rem;
+  color: var(--ink-soft);
+}
+
+.key-item {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.key svg {
+  flex: none;
+}
+
+footer {
+  margin-top: 3rem;
+  padding-top: 1.25rem;
+  border-top: 1px solid var(--rule);
+  font-size: 0.85rem;
+  color: var(--ink-faint);
+}
+
+footer a {
+  color: inherit;
+}
+
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}
