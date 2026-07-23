@@ -75,10 +75,13 @@ h1 {
   margin-bottom: 2rem;
 }
 
-#grid {
+.matrix-panel {
   flex: 0 0 auto;
   width: 100%;
   max-width: 20rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
 }
 
 .controls-strip {
@@ -244,11 +247,11 @@ input[type="range"] {
 
 .key {
   border-top: 1px solid var(--rule);
-  padding-top: 1.25rem;
-  display: flex;
-  flex-wrap: wrap;
-  gap: 1.25rem;
-  font-size: 0.85rem;
+  padding-top: 0.75rem;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 0.5rem 0.75rem;
+  font-size: 0.8rem;
   color: var(--ink-soft);
 }
 
@@ -260,6 +263,76 @@ input[type="range"] {
 
 .key svg {
   flex: none;
+}
+
+.circuit-section {
+  margin-bottom: 2rem;
+}
+
+.circuit-heading {
+  font-size: 0.78rem;
+  font-weight: 500;
+  letter-spacing: 0.07em;
+  text-transform: uppercase;
+  color: var(--ink-faint);
+  margin: 0 0 0.75rem;
+}
+
+.circuit-svg {
+  max-width: 38rem;
+}
+
+.circuit-wire {
+  stroke: var(--ink);
+  stroke-width: 1.5;
+  fill: none;
+}
+
+.circuit-gate {
+  fill: var(--paper-raised);
+  stroke: var(--ink);
+  stroke-width: 1.5;
+}
+
+.circuit-gate-label {
+  font-family: var(--font-data);
+  font-size: 15px;
+  font-weight: 600;
+  fill: var(--ink);
+}
+
+.circuit-control {
+  fill: var(--ink);
+}
+
+.circuit-xor {
+  fill: var(--paper);
+  stroke: var(--ink);
+  stroke-width: 1.5;
+}
+
+.circuit-bracket {
+  stroke: var(--ink-faint);
+  stroke-width: 1.5;
+  fill: none;
+}
+
+.circuit-qubit-label {
+  font-family: var(--font-data);
+  font-size: 11px;
+  fill: var(--ink-faint);
+}
+
+.circuit-ket {
+  font-family: var(--font-data);
+  font-size: 12px;
+  fill: var(--ink-soft);
+}
+
+.circuit-out {
+  font-size: 14px;
+  fill: var(--bloch-vec);
+  font-weight: 500;
 }
 
 footer {

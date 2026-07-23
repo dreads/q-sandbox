@@ -19,7 +19,27 @@
 </header>
 
 <div class="visuals">
-  <div id="grid" aria-live="off"></div>
+  <div class="matrix-panel">
+    <div id="grid" aria-live="off"></div>
+    <div class="key">
+      <span class="key-item">
+        <svg width="22" height="22" aria-hidden="true"><rect width="22" height="22" class="cell" fill-opacity="0.62"/></svg>
+        large magnitude
+      </span>
+      <span class="key-item">
+        <svg width="22" height="22" aria-hidden="true"><rect width="22" height="22" class="cell" fill-opacity="0.26"/></svg>
+        small magnitude
+      </span>
+      <span class="key-item">
+        <svg width="22" height="22" aria-hidden="true" class="gridlines"><rect x="0.5" y="0.5" width="21" height="21"/></svg>
+        zero
+      </span>
+      <span class="key-item">
+        <svg width="22" height="22" aria-hidden="true"><rect width="22" height="22" class="cell" fill-opacity="0.62"/><rect x="5" y="9" width="12" height="4" class="sign-bar"/></svg>
+        negative
+      </span>
+    </div>
+  </div>
   <div class="bloch-row" id="bloch-spheres"></div>
 </div>
 
@@ -69,24 +89,10 @@
   </div>
 </div>
 
-<div class="key">
-  <span class="key-item">
-    <svg width="26" height="26" aria-hidden="true"><rect width="26" height="26" class="cell" fill-opacity="0.62"/></svg>
-    large magnitude
-  </span>
-  <span class="key-item">
-    <svg width="26" height="26" aria-hidden="true"><rect width="26" height="26" class="cell" fill-opacity="0.26"/></svg>
-    small magnitude
-  </span>
-  <span class="key-item">
-    <svg width="26" height="26" aria-hidden="true" class="gridlines"><rect x="0.5" y="0.5" width="25" height="25"/></svg>
-    zero
-  </span>
-  <span class="key-item">
-    <svg width="26" height="26" aria-hidden="true"><rect width="26" height="26" class="cell" fill-opacity="0.62"/><rect x="6" y="11" width="14" height="4" class="sign-bar"/></svg>
-    negative
-  </span>
-</div>
+<section class="circuit-section">
+  <h2 class="circuit-heading">Circuit diagram</h2>
+  <div id="circuit-diagram"></div>
+</section>
 
 <footer>
   <p>

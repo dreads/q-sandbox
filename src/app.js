@@ -11,6 +11,7 @@ import {
 } from './state.js';
 import { createMatrixGrid } from './matrix-grid.js';
 import { createBlochSpheres } from './bloch-sphere.js';
+import { createCircuitDiagram } from './circuit-diagram.js';
 
 const model = {
   q0: 0,
@@ -22,6 +23,7 @@ const model = {
 const dom = {};
 let draw;
 let drawBloch;
+let drawCircuit;
 
 function query() {
   [
@@ -39,6 +41,7 @@ function query() {
     'purity',
     'reading',
     'bloch-spheres',
+    'circuit-diagram',
   ].forEach((id) => {
     dom[id] = document.getElementById(id);
   });
@@ -99,7 +102,8 @@ function render() {
   const conc = concurrence(rho);
   const pur = purity(rho);
 
-  dom['state-label'].textContent = stateLabel({ psi, negative });
+  const label = stateLabel({ psi, negative });
+  dom['state-label'].textContent = label;
   dom.concurrence.textContent = conc.toFixed(2);
   dom.purity.textContent = pur.toFixed(2);
   dom.reading.textContent = interpret({
@@ -113,12 +117,14 @@ function render() {
     blochVector(partialTrace0(rho)),
     blochVector(partialTrace1(rho)),
   );
+  drawCircuit({ q0: model.q0, q1: model.q1, label });
 }
 
 function init() {
   query();
   draw = createMatrixGrid(dom.grid);
   drawBloch = createBlochSpheres(dom['bloch-spheres']);
+  drawCircuit = createCircuitDiagram(dom['circuit-diagram']);
 
   dom.q0.addEventListener('click', () => toggleBit('q0'));
   dom.phase.addEventListener('click', () => toggleBit('q0'));
