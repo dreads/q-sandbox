@@ -89,4 +89,33 @@ export function stateLabel({ psi, negative }) {
   return `|${psi ? 'Ψ' : 'Φ'}${negative ? '⁻' : '⁺'}⟩`;
 }
 
+/** Reduced 2×2 density matrix for qubit 0 (trace out qubit 1). */
+export function partialTrace0(rho) {
+  return [
+    [rho[0][0] + rho[1][1], rho[0][2] + rho[1][3]],
+    [rho[2][0] + rho[3][1], rho[2][2] + rho[3][3]],
+  ];
+}
+
+/** Reduced 2×2 density matrix for qubit 1 (trace out qubit 0). */
+export function partialTrace1(rho) {
+  return [
+    [rho[0][0] + rho[2][2], rho[0][1] + rho[2][3]],
+    [rho[1][0] + rho[3][2], rho[1][1] + rho[3][3]],
+  ];
+}
+
+/**
+ * Bloch vector [rx, ry, rz] from a 2×2 density matrix.
+ * rx = Tr(ρ σx), ry = Tr(ρ σy), rz = Tr(ρ σz).
+ * For real-valued matrices ry is always 0.
+ */
+export function blochVector(rho2) {
+  return [
+    rho2[0][1] + rho2[1][0],  // rx
+    0,                          // ry (zero for real ρ)
+    rho2[0][0] - rho2[1][1],  // rz
+  ];
+}
+
 export { BASIS };

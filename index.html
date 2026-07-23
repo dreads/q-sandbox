@@ -18,13 +18,14 @@
   </p>
 </header>
 
-<div class="layout">
-
+<div class="visuals">
   <div id="grid" aria-live="off"></div>
+  <div class="bloch-row" id="bloch-spheres"></div>
+</div>
 
-  <div>
+<div class="controls-strip">
+  <div class="controls-group">
     <p class="state-line" id="state-label">|Φ⁺⟩</p>
-
     <fieldset>
       <legend>Input state</legend>
       <div class="pair">
@@ -37,21 +38,23 @@
         <button type="button" id="family" aria-pressed="false">Φ family</button>
       </div>
     </fieldset>
+  </div>
 
-    <fieldset>
-      <legend>Channel</legend>
-      <div class="slider-row">
-        <label for="dephasing">Dephasing</label>
-        <input type="range" id="dephasing" min="0" max="100" step="1" value="0">
-        <output id="dephasing-value" for="dephasing">0%</output>
-      </div>
-      <div class="slider-row">
-        <label for="theta">Balance θ</label>
-        <input type="range" id="theta" min="0" max="90" step="1" value="45">
-        <output id="theta-value" for="theta">45°</output>
-      </div>
-    </fieldset>
+  <fieldset class="channel-fieldset">
+    <legend>Channel</legend>
+    <div class="slider-row">
+      <label for="dephasing">Dephasing</label>
+      <input type="range" id="dephasing" min="0" max="100" step="1" value="0">
+      <output id="dephasing-value" for="dephasing">0%</output>
+    </div>
+    <div class="slider-row">
+      <label for="theta">Balance θ</label>
+      <input type="range" id="theta" min="0" max="90" step="1" value="45">
+      <output id="theta-value" for="theta">45°</output>
+    </div>
+  </fieldset>
 
+  <div class="controls-group">
     <div class="readouts">
       <div class="readout">
         <div class="label">Concurrence</div>
@@ -62,7 +65,6 @@
         <div class="value" id="purity">1.00</div>
       </div>
     </div>
-
     <p class="reading" id="reading" aria-live="polite"></p>
   </div>
 </div>

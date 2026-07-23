@@ -5,8 +5,12 @@ import {
   bellFromInput,
   inputFromBell,
   stateLabel,
+  partialTrace0,
+  partialTrace1,
+  blochVector,
 } from './state.js';
 import { createMatrixGrid } from './matrix-grid.js';
+import { createBlochSpheres } from './bloch-sphere.js';
 
 const model = {
   q0: 0,
@@ -17,6 +21,7 @@ const model = {
 
 const dom = {};
 let draw;
+let drawBloch;
 
 function query() {
   [
@@ -33,6 +38,7 @@ function query() {
     'concurrence',
     'purity',
     'reading',
+    'bloch-spheres',
   ].forEach((id) => {
     dom[id] = document.getElementById(id);
   });
@@ -102,11 +108,17 @@ function render() {
     dephasing: model.dephasing,
     theta: model.theta,
   });
+
+  drawBloch(
+    blochVector(partialTrace0(rho)),
+    blochVector(partialTrace1(rho)),
+  );
 }
 
 function init() {
   query();
   draw = createMatrixGrid(dom.grid);
+  drawBloch = createBlochSpheres(dom['bloch-spheres']);
 
   dom.q0.addEventListener('click', () => toggleBit('q0'));
   dom.phase.addEventListener('click', () => toggleBit('q0'));

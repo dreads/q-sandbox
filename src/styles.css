@@ -9,6 +9,8 @@
   --focus: #2f5fa8;
   --font-body: ui-sans-serif, system-ui, -apple-system, "Segoe UI", sans-serif;
   --font-data: ui-monospace, "SF Mono", "Cascadia Mono", Menlo, monospace;
+  --bloch-vec: #2f5fa8;
+  --bloch-sphere: rgba(91, 168, 212, 0.13);
 }
 
 @media (prefers-color-scheme: dark) {
@@ -21,6 +23,8 @@
     --rule: rgba(236, 234, 228, 0.16);
     --rule-strong: rgba(236, 234, 228, 0.32);
     --focus: #7aa8e8;
+    --bloch-vec: #7aa8e8;
+    --bloch-sphere: rgba(91, 168, 212, 0.08);
   }
 }
 
@@ -63,18 +67,37 @@ h1 {
   max-width: 46rem;
 }
 
-.layout {
-  display: grid;
-  grid-template-columns: minmax(0, 20rem) minmax(0, 1fr);
+.visuals {
+  display: flex;
   gap: 2.5rem;
-  align-items: start;
+  align-items: flex-start;
+  flex-wrap: wrap;
+  margin-bottom: 2rem;
 }
 
-@media (max-width: 46rem) {
-  .layout {
-    grid-template-columns: minmax(0, 1fr);
-    gap: 2rem;
-  }
+#grid {
+  flex: 0 0 auto;
+  width: 100%;
+  max-width: 20rem;
+}
+
+.controls-strip {
+  display: flex;
+  gap: 2.5rem;
+  align-items: flex-start;
+  flex-wrap: wrap;
+  padding-top: 1.5rem;
+  border-top: 1px solid var(--rule);
+  margin-bottom: 2rem;
+}
+
+.controls-group {
+  min-width: 12rem;
+}
+
+.channel-fieldset {
+  flex: 1;
+  min-width: 16rem;
 }
 
 .tick {
@@ -249,6 +272,30 @@ footer {
 
 footer a {
   color: inherit;
+}
+
+.bloch-row {
+  display: flex;
+  gap: 2rem;
+  flex-wrap: wrap;
+}
+
+.bloch-panel {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.25rem;
+}
+
+.bloch-label {
+  font-family: var(--font-data);
+  font-size: 0.85rem;
+  color: var(--ink-soft);
+  margin: 0;
+}
+
+.bloch-sphere-fill {
+  fill: var(--bloch-sphere);
 }
 
 .sr-only {
