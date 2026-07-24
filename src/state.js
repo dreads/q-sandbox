@@ -133,21 +133,18 @@ function transpose4(M) {
 }
 
 /**
- * Apply Rᵧ(alpha) ⊗ I to a 4×4 density matrix: ρ′ = (Rᵧ⊗I) ρ (Rᵧ⊗I)†.
- * Rᵧ rotates q0's Bloch vector in the x-z plane; q1 is untouched.
+ * Apply Rᵧ(alpha) to one qubit of a 4×4 density matrix.
+ *   qubit = 0  →  Rᵧ(alpha) ⊗ I   (rotates q0's Bloch vector in the x-z plane)
+ *   qubit = 1  →  I ⊗ Rᵧ(alpha)   (rotates q1's Bloch vector in the x-z plane)
  * Returns rho unchanged when alpha is effectively zero.
  */
-export function applyLocalRotation(rho, alpha) {
+export function applyLocalRotation(rho, alpha, qubit = 0) {
   if (Math.abs(alpha) < 1e-10) return rho;
   const c = Math.cos(alpha / 2);
   const s = Math.sin(alpha / 2);
-  // Rᵧ(alpha) ⊗ I in the |00⟩,|01⟩,|10⟩,|11⟩ basis
-  const U = [
-    [ c, 0, -s, 0],
-    [ 0, c,  0, -s],
-    [ s, 0,  c,  0],
-    [ 0, s,  0,  c],
-  ];
+  const U = qubit === 0
+    ? [[ c,  0, -s,  0], [ 0,  c,  0, -s], [ s,  0,  c,  0], [ 0,  s,  0,  c]]
+    : [[ c, -s,  0,  0], [ s,  c,  0,  0], [ 0,  0,  c, -s], [ 0,  0,  s,  c]];
   return mat4mul(mat4mul(U, rho), transpose4(U));
 }
 

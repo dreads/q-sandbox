@@ -89,6 +89,19 @@ class. The reason for including this gate is not to make new states but to
 probe the Bell state: to ask what an observer holding only q0 can learn by
 acting on it.
 
+**Why Rᵧ and not Rx or Rz?** Bell states have real-valued amplitudes, and Rᵧ
+has a real matrix — all entries are sines and cosines with no imaginary
+components. Applying Rᵧ therefore keeps the density matrix real throughout,
+which is why the Bloch vector y-component is always zero in this tool: it
+equals `Tr(ρ σᵧ)`, which involves imaginary off-diagonal entries that are
+never present in a real matrix. Rᵧ also sweeps Bloch vectors through the
+x-z plane, which is exactly where they can move from their starting position
+on the z-axis — making the effect visible. Rx would introduce complex-valued
+density matrix entries and pull vectors into the y-direction, requiring the
+imaginary part of the matrix to be tracked and rendered. Rz keeps z-axis
+vectors on the z-axis (it adds a phase but no visible displacement), so it
+would not illustrate the local-operation effect that motivates the control.
+
 ## How to read the matrix
 
 Rows and columns are ordered 00, 01, 10, 11 in both directions.
@@ -123,13 +136,20 @@ diagonal alone. At `p = 1` the state is a classical correlated mixture.
 are equal and the state is maximally entangled. At 0° or 90° it collapses to a
 product state — still pure, but with nothing to entangle.
 
-**Local rotation α** applies Rᵧ(α) to q0 after the Bell state is generated.
+**Rotate q0 α** applies Rᵧ(α) to q0 after the Bell state is generated.
 Rᵧ(α) is a rotation of q0's Bloch vector in the x-z plane by angle α. At
 α = 0 the state is an unmodified Bell state. At α ≠ 0 the state is no longer
 a Bell state, though it remains locally equivalent to one. Watch the Bloch
 sphere for q0 while turning this slider — what happens depends entirely on
 Balance θ, and the contrast between θ = 45° and any other value is the point
 of the control.
+
+**Rotate q1 β** applies an independent Rᵧ(β) to q1 after the Bell state is
+generated. It behaves symmetrically to the q0 rotation: at θ = 45° the Bloch
+vector for q1 is pinned at the origin regardless of β, while at other values
+of θ the vector responds and traces the x-z plane. Running both sliders
+simultaneously demonstrates that no combination of single-qubit operations
+can move either Bloch vector when the state is maximally entangled.
 
 ## Bloch spheres
 
@@ -255,10 +275,11 @@ Some directions the current structure supports:
 - Amplitude damping alongside dephasing (relaxation toward \|00⟩ rather than
   loss of coherence). This moves the diagonal, unlike dephasing, and would
   visibly displace the Bloch vectors toward the south pole.
-- Complex phases in the density matrix, requiring a second grid for the
-  imaginary part or a hue channel in each cell.
-- Rotation of q1 as well as q0, allowing independent local operations on
-  both qubits and a richer exploration of the LU orbit of each Bell state.
+- Complex phases in the density matrix. Adding Rx or Rz rotations, or
+  starting from states with complex amplitudes, produces non-zero imaginary
+  off-diagonal entries and a non-zero Bloch vector y-component. Rendering
+  this would require a second grid for the imaginary part (or a hue channel
+  in each cell) and removing the ry = 0 simplification from `blochVector()`.
 - Measurement in a rotated basis, showing the interference that distinguishes a
   superposition from a mixture.
 

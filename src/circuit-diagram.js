@@ -82,14 +82,24 @@ export function createCircuitDiagram(container) {
   svg.appendChild(el('line', { x1: X_BRACKET, y1: Y1, x2: X_BRACKET + TICK, y2: Y1, class: 'circuit-bracket' }));
 
   // Rᵧ(α) gate on q0 — local operation, sits visibly after the Bell-state bracket
-  const ryGroup = el('g');
-  ryGroup.appendChild(el('rect', {
+  const ryGroup0 = el('g');
+  ryGroup0.appendChild(el('rect', {
     x: X_RY - RY_GATE_W / 2, y: Y0 - GATE_H / 2,
     width: RY_GATE_W, height: GATE_H,
     class: 'circuit-gate',
   }));
-  ryGroup.appendChild(txt(X_RY, Y0, 'Ry', { class: 'circuit-gate-label' }));
-  svg.appendChild(ryGroup);
+  ryGroup0.appendChild(txt(X_RY, Y0, 'Ry', { class: 'circuit-gate-label' }));
+  svg.appendChild(ryGroup0);
+
+  // Rᵧ(β) gate on q1 — independent local operation on q1
+  const ryGroup1 = el('g');
+  ryGroup1.appendChild(el('rect', {
+    x: X_RY - RY_GATE_W / 2, y: Y1 - GATE_H / 2,
+    width: RY_GATE_W, height: GATE_H,
+    class: 'circuit-gate',
+  }));
+  ryGroup1.appendChild(txt(X_RY, Y1, 'Ry', { class: 'circuit-gate-label' }));
+  svg.appendChild(ryGroup1);
 
   // Wire qubit name labels
   svg.appendChild(txt(14, Y0, 'q0', { class: 'circuit-qubit-label' }));
@@ -106,11 +116,12 @@ export function createCircuitDiagram(container) {
 
   container.appendChild(svg);
 
-  return function draw({ q0, q1, label, alpha }) {
+  return function draw({ q0, q1, label, alpha0, alpha1 }) {
     inLabel0.textContent = `|${q0}⟩`;
     inLabel1.textContent = `|${q1}⟩`;
     outLabel.textContent = label;
-    // Dim the Ry gate when alpha is zero (acting as identity)
-    ryGroup.setAttribute('opacity', Math.abs(alpha) < 0.005 ? '0.28' : '1');
+    // Dim each Ry gate when its angle is zero (acting as identity)
+    ryGroup0.setAttribute('opacity', Math.abs(alpha0) < 0.005 ? '0.28' : '1');
+    ryGroup1.setAttribute('opacity', Math.abs(alpha1) < 0.005 ? '0.28' : '1');
   };
 }

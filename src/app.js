@@ -19,7 +19,8 @@ const model = {
   q1: 0,
   theta: Math.PI / 4,
   dephasing: 0,
-  localRotation: 0,
+  rotation0: 0,
+  rotation1: 0,
 };
 
 const dom = {};
@@ -46,6 +47,8 @@ function query() {
     'circuit-diagram',
     'local-rotation',
     'local-rotation-value',
+    'local-rotation-1',
+    'local-rotation-1-value',
   ].forEach((id) => {
     dom[id] = document.getElementById(id);
   });
@@ -93,7 +96,10 @@ function render() {
     theta: model.theta,
     dephasing: model.dephasing,
   });
-  const rho = applyLocalRotation(baseRho, model.localRotation);
+  const rho = applyLocalRotation(
+    applyLocalRotation(baseRho, model.rotation0, 0),
+    model.rotation1, 1,
+  );
 
   draw(rho);
 
@@ -104,10 +110,12 @@ function render() {
 
   const degrees = Math.round((model.theta * 180) / Math.PI);
   const percent = Math.round(model.dephasing * 100);
-  const rotDeg = Math.round((model.localRotation * 180) / Math.PI);
+  const rot0Deg = Math.round((model.rotation0 * 180) / Math.PI);
+  const rot1Deg = Math.round((model.rotation1 * 180) / Math.PI);
   dom['theta-value'].textContent = `${degrees}°`;
   dom['dephasing-value'].textContent = `${percent}%`;
-  dom['local-rotation-value'].textContent = `${rotDeg}°`;
+  dom['local-rotation-value'].textContent = `${rot0Deg}°`;
+  dom['local-rotation-1-value'].textContent = `${rot1Deg}°`;
 
   const conc = concurrence(baseRho);  // Bell-state formula; entanglement is rotation-invariant
   const pur = purity(rho);
@@ -127,7 +135,7 @@ function render() {
     blochVector(partialTrace0(rho)),
     blochVector(partialTrace1(rho)),
   );
-  drawCircuit({ q0: model.q0, q1: model.q1, label, alpha: model.localRotation });
+  drawCircuit({ q0: model.q0, q1: model.q1, label, alpha0: model.rotation0, alpha1: model.rotation1 });
 }
 
 function init() {
@@ -152,7 +160,12 @@ function init() {
   });
 
   dom['local-rotation'].addEventListener('input', (e) => {
-    model.localRotation = (Number(e.target.value) * Math.PI) / 180;
+    model.rotation0 = (Number(e.target.value) * Math.PI) / 180;
+    render();
+  });
+
+  dom['local-rotation-1'].addEventListener('input', (e) => {
+    model.rotation1 = (Number(e.target.value) * Math.PI) / 180;
     render();
   });
 
