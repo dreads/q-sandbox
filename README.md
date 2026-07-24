@@ -14,6 +14,10 @@ result in quantum information: **maximally entangled states are completely
 immune to local operations at the single-qubit level.** Everything in the
 interface is designed to make that result visible and interactive.
 
+Below is an illustration of the concept, including color:
+
+![dephasing_bell_state.jpg](doc/dephasing_bell_state.jpg)
+
 Experts might notice that this explorer only works with the real number parts 
 for simplicity, so hues indicating variations in phase have been omitted. 
 
