@@ -3,12 +3,19 @@
 An interactive visualisation of the two-qubit density matrix for Bell states,
 with controls for dephasing, amplitude balance, and local single-qubit rotation.
 
+Two qubits go through a Hadamard and a CNOT, producing one of the four Bell states 
+depending on the input bits. The 4×4 density matrix is rendered as a greyscale grid 
+where diagonal entries are measurement probabilities and off-diagonal entries are 
+coherences. Sliders control dephasing, amplitude balance (θ), and single-qubit 
+rotations on each qubit, with concurrence and purity displayed as live readouts. 
+
 The tool deliberately steps one gate beyond Bell states to demonstrate a core
 result in quantum information: **maximally entangled states are completely
 immune to local operations at the single-qubit level.** Everything in the
 interface is designed to make that result visible and interactive.
 
-No build step, no dependencies. Plain ES modules served as static files.
+Experts might notice that this explorer only works with the real number parts 
+for simplicity, so hues indicating variations in phase have been omitted. 
 
 ## Running locally
 
