@@ -49,6 +49,7 @@ function query() {
     'local-rotation-value',
     'local-rotation-1',
     'local-rotation-1-value',
+    'reset',
   ].forEach((id) => {
     dom[id] = document.getElementById(id);
   });
@@ -166,6 +167,22 @@ function init() {
 
   dom['local-rotation-1'].addEventListener('input', (e) => {
     model.rotation1 = (Number(e.target.value) * Math.PI) / 180;
+    render();
+  });
+
+  dom.reset.addEventListener('click', () => {
+    model.q0 = 0;
+    model.q1 = 0;
+    model.theta = Math.PI / 4;
+    model.dephasing = 0;
+    model.rotation0 = 0;
+    model.rotation1 = 0;
+
+    dom.dephasing.value = '0';
+    dom.theta.value = '45';
+    dom['local-rotation'].value = '0';
+    dom['local-rotation-1'].value = '0';
+
     render();
   });
 

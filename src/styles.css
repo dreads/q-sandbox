@@ -194,6 +194,23 @@ button[aria-pressed="true"] {
   text-align: right;
 }
 
+.reset-btn {
+  display: block;
+  margin-top: 0.75rem;
+  padding: 0.3rem 1rem;
+  font-size: 0.85rem;
+  color: var(--ink-soft);
+  background: transparent;
+  border: 1px solid var(--rule-strong);
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+.reset-btn:hover {
+  color: var(--ink);
+  border-color: var(--ink);
+}
+
 input[type="range"] {
   width: 100%;
   accent-color: var(--ink);
