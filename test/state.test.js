@@ -4,9 +4,14 @@ import {
   densityMatrix,
   concurrence,
   purity,
+  outcomeProbabilities,
   bellFromInput,
   inputFromBell,
   stateLabel,
+  partialTrace0,
+  partialTrace1,
+  blochVector,
+  applyLocalRotation,
 } from '../src/state.js';
 
 const BELL = { psi: false, negative: false, theta: Math.PI / 4, dephasing: 0 };
@@ -118,4 +123,105 @@ test('input bits map to the four Bell states bijectively', () => {
     }
   }
   assert.equal(seen.size, 4);
+});
+
+test('stateLabel renders the four Bell kets', () => {
+  assert.equal(stateLabel({ psi: false, negative: false }), '|Φ⁺⟩');
+  assert.equal(stateLabel({ psi: false, negative: true }), '|Φ⁻⟩');
+  assert.equal(stateLabel({ psi: true, negative: false }), '|Ψ⁺⟩');
+  assert.equal(stateLabel({ psi: true, negative: true }), '|Ψ⁻⟩');
+});
+
+test('concurrence picks the populated block regardless of family', () => {
+  const phi = densityMatrix({ ...BELL, psi: false });
+  const psi = densityMatrix({ ...BELL, psi: true });
+  close(concurrence(phi), 1);
+  close(concurrence(psi), 1);
+});
+
+test('outcome probabilities sum to one and match the diagonal', () => {
+  const rho = densityMatrix({ ...BELL, theta: Math.PI / 6, dephasing: 0.4 });
+  const outcomes = outcomeProbabilities(rho);
+  assert.deepEqual(
+    outcomes.map((o) => o.label),
+    ['00', '01', '10', '11']
+  );
+  const total = outcomes.reduce((sum, o) => sum + o.probability, 0);
+  close(total, 1);
+  outcomes.forEach((o, k) => close(o.probability, rho[k][k]));
+});
+
+test('partial trace of a maximally entangled state is maximally mixed', () => {
+  const rho = densityMatrix(BELL);
+  for (const trace of [partialTrace0(rho), partialTrace1(rho)]) {
+    close(trace[0][0], 0.5);
+    close(trace[1][1], 0.5);
+    close(trace[0][1], 0);
+    close(trace[1][0], 0);
+  }
+});
+
+test('partial trace of a product state is pure', () => {
+  const rho = densityMatrix({ ...BELL, theta: 0 });
+  const t0 = partialTrace0(rho);
+  const t1 = partialTrace1(rho);
+  close(t0[0][0], 1);
+  close(t0[1][1], 0);
+  close(t1[0][0], 1);
+  close(t1[1][1], 0);
+});
+
+test('bloch vector is at the origin for a maximally entangled qubit', () => {
+  const rho = densityMatrix(BELL);
+  const [rx, ry, rz] = blochVector(partialTrace0(rho));
+  close(rx, 0);
+  close(ry, 0);
+  close(rz, 0);
+});
+
+test('bloch vector points to the pole for a product state', () => {
+  const rho = densityMatrix({ ...BELL, theta: 0 });
+  const [rx0, ry0, rz0] = blochVector(partialTrace0(rho));
+  close(rx0, 0);
+  close(ry0, 0);
+  close(rz0, 1);
+});
+
+test('applyLocalRotation is a no-op below the alpha threshold', () => {
+  const rho = densityMatrix(BELL);
+  assert.equal(applyLocalRotation(rho, 1e-11), rho);
+});
+
+test('applyLocalRotation preserves trace and purity for either qubit', () => {
+  for (const qubit of [0, 1]) {
+    for (const alpha of [0.3, Math.PI / 2, 2.1, Math.PI]) {
+      const base = densityMatrix({ psi: false, negative: false, theta: 0.4, dephasing: 0.2 });
+      const rotated = applyLocalRotation(base, alpha, qubit);
+      const trace = rotated[0][0] + rotated[1][1] + rotated[2][2] + rotated[3][3];
+      close(trace, 1);
+      close(purity(rotated), purity(base));
+    }
+  }
+});
+
+test('applyLocalRotation on qubit 0 sweeps only q0 Bloch vector', () => {
+  const base = densityMatrix({ psi: false, negative: false, theta: 0, dephasing: 0 });
+  const rotated = applyLocalRotation(base, Math.PI / 2, 0);
+  const [rx0, , rz0] = blochVector(partialTrace0(rotated));
+  const [rx1, , rz1] = blochVector(partialTrace1(rotated));
+  close(rx0, 1);
+  close(rz0, 0);
+  close(rx1, 0);
+  close(rz1, 1);
+});
+
+test('applyLocalRotation on qubit 1 sweeps only q1 Bloch vector', () => {
+  const base = densityMatrix({ psi: false, negative: false, theta: 0, dephasing: 0 });
+  const rotated = applyLocalRotation(base, Math.PI / 2, 1);
+  const [rx0, , rz0] = blochVector(partialTrace0(rotated));
+  const [rx1, , rz1] = blochVector(partialTrace1(rotated));
+  close(rx0, 0);
+  close(rz0, 1);
+  close(rx1, 1);
+  close(rz1, 0);
 });
