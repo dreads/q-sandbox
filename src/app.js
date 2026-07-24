@@ -8,6 +8,7 @@ import {
   partialTrace0,
   partialTrace1,
   blochVector,
+  applyLocalRotation,
 } from './state.js';
 import { createMatrixGrid } from './matrix-grid.js';
 import { createBlochSpheres } from './bloch-sphere.js';
@@ -18,6 +19,7 @@ const model = {
   q1: 0,
   theta: Math.PI / 4,
   dephasing: 0,
+  localRotation: 0,
 };
 
 const dom = {};
@@ -42,6 +44,8 @@ function query() {
     'reading',
     'bloch-spheres',
     'circuit-diagram',
+    'local-rotation',
+    'local-rotation-value',
   ].forEach((id) => {
     dom[id] = document.getElementById(id);
   });
@@ -80,12 +84,16 @@ function interpret({ conc, pur, dephasing, theta }) {
 
 function render() {
   const { psi, negative } = bellFromInput(model.q0, model.q1);
-  const rho = densityMatrix({
+  // Compute Bell state (with dephasing), then apply local rotation to q0.
+  // Concurrence is evaluated on the pre-rotation state because the Bell-state
+  // formula is only valid for that structure; local unitaries preserve entanglement.
+  const baseRho = densityMatrix({
     psi,
     negative,
     theta: model.theta,
     dephasing: model.dephasing,
   });
+  const rho = applyLocalRotation(baseRho, model.localRotation);
 
   draw(rho);
 
@@ -96,10 +104,12 @@ function render() {
 
   const degrees = Math.round((model.theta * 180) / Math.PI);
   const percent = Math.round(model.dephasing * 100);
+  const rotDeg = Math.round((model.localRotation * 180) / Math.PI);
   dom['theta-value'].textContent = `${degrees}°`;
   dom['dephasing-value'].textContent = `${percent}%`;
+  dom['local-rotation-value'].textContent = `${rotDeg}°`;
 
-  const conc = concurrence(rho);
+  const conc = concurrence(baseRho);  // Bell-state formula; entanglement is rotation-invariant
   const pur = purity(rho);
 
   const label = stateLabel({ psi, negative });
@@ -117,7 +127,7 @@ function render() {
     blochVector(partialTrace0(rho)),
     blochVector(partialTrace1(rho)),
   );
-  drawCircuit({ q0: model.q0, q1: model.q1, label });
+  drawCircuit({ q0: model.q0, q1: model.q1, label, alpha: model.localRotation });
 }
 
 function init() {
@@ -138,6 +148,11 @@ function init() {
 
   dom.theta.addEventListener('input', (e) => {
     model.theta = (Number(e.target.value) * Math.PI) / 180;
+    render();
+  });
+
+  dom['local-rotation'].addEventListener('input', (e) => {
+    model.localRotation = (Number(e.target.value) * Math.PI) / 180;
     render();
   });
 

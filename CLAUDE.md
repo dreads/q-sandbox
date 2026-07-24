@@ -74,6 +74,25 @@ Basis order in rows/cols: 00, 01, 10, 11 (indices 0–3).
 - `#bloch-spheres` div in index.html below the main `.layout`
 - CSS: `--bloch-vec`, `--bloch-sphere`, `.bloch-sphere-fill`, `.bloch-panel`, `.bloch-label`
 
+## Added: Local rotation (Ry gate)
+
+`state.js` exports `applyLocalRotation(rho, alpha)` — applies Rᵧ(α)⊗I to the 4×4 density matrix.
+- Uses private `mat4mul` and `transpose4` helpers (4×4 real matrix multiply / transpose)
+- `alpha` in radians; returns `rho` unchanged when alpha < 1e-10
+- U = Rᵧ(α)⊗I in |00⟩,|01⟩,|10⟩,|11⟩ basis: block-diagonal [[c,0,-s,0],[0,c,0,-s],[s,0,c,0],[0,s,0,c]]
+
+Render flow in `app.js`:
+1. `baseRho = densityMatrix(...)` — Bell state with dephasing
+2. `rho = applyLocalRotation(baseRho, model.localRotation)` — local rotation applied after
+3. `concurrence(baseRho)` — uses Bell-state-specific formula; valid because local unitaries preserve entanglement
+4. `purity(rho)` — Tr(ρ²), valid for any state
+
+Circuit diagram: Ry gate group dims to opacity 0.28 when alpha≈0 (identity). Draw function takes `{ q0, q1, label, alpha }`.
+
+Slider: `#local-rotation` 0–360°, model stores radians. `#local-rotation-value` shows degrees.
+
+Key physics: at θ=45° (maximal entanglement), Bloch vectors don't move regardless of α. Below 45°, q0's Bloch vector sweeps the x-z plane.
+
 ## Planned extension directions
 
 From README — areas where the codebase is designed to grow:

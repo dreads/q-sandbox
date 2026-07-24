@@ -118,4 +118,37 @@ export function blochVector(rho2) {
   ];
 }
 
+// --- Local unitary helpers ---
+
+function mat4mul(A, B) {
+  return A.map((row) =>
+    [0, 1, 2, 3].map((j) =>
+      row.reduce((sum, aik, k) => sum + aik * B[k][j], 0)
+    )
+  );
+}
+
+function transpose4(M) {
+  return [0, 1, 2, 3].map((i) => [0, 1, 2, 3].map((j) => M[j][i]));
+}
+
+/**
+ * Apply Rᵧ(alpha) ⊗ I to a 4×4 density matrix: ρ′ = (Rᵧ⊗I) ρ (Rᵧ⊗I)†.
+ * Rᵧ rotates q0's Bloch vector in the x-z plane; q1 is untouched.
+ * Returns rho unchanged when alpha is effectively zero.
+ */
+export function applyLocalRotation(rho, alpha) {
+  if (Math.abs(alpha) < 1e-10) return rho;
+  const c = Math.cos(alpha / 2);
+  const s = Math.sin(alpha / 2);
+  // Rᵧ(alpha) ⊗ I in the |00⟩,|01⟩,|10⟩,|11⟩ basis
+  const U = [
+    [ c, 0, -s, 0],
+    [ 0, c,  0, -s],
+    [ s, 0,  c,  0],
+    [ 0, s,  0,  c],
+  ];
+  return mat4mul(mat4mul(U, rho), transpose4(U));
+}
+
 export { BASIS };

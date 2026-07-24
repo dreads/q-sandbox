@@ -1,7 +1,12 @@
 # Bell state density matrix explorer
 
 An interactive visualisation of the two-qubit density matrix for Bell states,
-with controls for dephasing and amplitude balance.
+with controls for dephasing, amplitude balance, and local single-qubit rotation.
+
+The tool deliberately steps one gate beyond Bell states to demonstrate a core
+result in quantum information: **maximally entangled states are completely
+immune to local operations at the single-qubit level.** Everything in the
+interface is designed to make that result visible and interactive.
 
 No build step, no dependencies. Plain ES modules served as static files.
 
@@ -67,6 +72,23 @@ The input ket labels update as you toggle the input buttons, and the output
 label updates to the corresponding Bell state. The circuit itself never
 changes; only the input changes.
 
+**Local rotation Rᵧ(α)** appears after the CNOT, controlled by the Local
+rotation slider:
+
+```
+q0: |q0⟩ ──[H]──●──[Rᵧ(α)]──
+                 |               ── (locally rotated state)
+q1: |q1⟩ ───────⊕─────────────
+```
+
+This gate is not part of the Bell state preparation — it sits outside the
+bracket that produces the Bell state and is labelled separately in the diagram
+so the boundary is always visible. The states it produces are no longer Bell
+states; they are *locally equivalent* to Bell states, which is a distinct
+class. The reason for including this gate is not to make new states but to
+probe the Bell state: to ask what an observer holding only q0 can learn by
+acting on it.
+
 ## How to read the matrix
 
 Rows and columns are ordered 00, 01, 10, 11 in both directions.
@@ -100,6 +122,14 @@ diagonal alone. At `p = 1` the state is a classical correlated mixture.
 **Balance θ** sets the state to `cos θ |aa⟩ + sin θ |bb⟩`. At 45° the amplitudes
 are equal and the state is maximally entangled. At 0° or 90° it collapses to a
 product state — still pure, but with nothing to entangle.
+
+**Local rotation α** applies Rᵧ(α) to q0 after the Bell state is generated.
+Rᵧ(α) is a rotation of q0's Bloch vector in the x-z plane by angle α. At
+α = 0 the state is an unmodified Bell state. At α ≠ 0 the state is no longer
+a Bell state, though it remains locally equivalent to one. Watch the Bloch
+sphere for q0 while turning this slider — what happens depends entirely on
+Balance θ, and the contrast between θ = 45° and any other value is the point
+of the control.
 
 ## Bloch spheres
 
@@ -152,6 +182,36 @@ while the Bloch spheres show nothing happening. That contrast is the
 difference between coherence (a property of the joint state) and the marginal
 state of each qubit.
 
+**Local rotation and the immunity of entanglement**
+
+The local rotation slider is the sharpest demonstration in the tool. Set
+Balance θ to 45° and move Local rotation α through its full range. The
+two-qubit density matrix changes — the off-diagonal entries rotate in the
+complex plane — but the Bloch spheres do not move. The vectors stay fixed at
+the origin.
+
+This is not a coincidence of the particular gate chosen. **Maximally entangled
+states are completely immune to local operations at the single-qubit level.**
+No gate applied to q0 alone — no rotation, no measurement, no transformation
+of any kind — can change what an observer of q0 sees. The reduced density
+matrix of q0 is the maximally mixed state I/2 regardless of what is done
+locally, because all information about the joint state is stored in the
+correlations between the two qubits, not in either qubit alone.
+
+Now reduce θ below 45°. The immunity breaks. The Bloch vector for q0 begins
+to respond to the rotation, sweeping through the x-z plane. The further θ
+moves from 45°, the longer the vector and the more visibly it rotates. At
+θ = 0° the state is a product state with no entanglement and the vector
+traces a full circle as α varies.
+
+The x and y components that appear under local rotation represent the
+off-diagonal entries of q0's reduced density matrix — the single-qubit
+coherence. For pure Bell states these are always zero because the superposition
+in the two-qubit state is between terms that differ in both qubits
+simultaneously; partial trace washes those cross terms out. The Bloch vectors
+are confined to the z-axis until local rotation breaks the symmetry, and only
+because the state is no longer maximally entangled.
+
 **Connecting Bloch spheres to the matrix**
 
 The density matrix diagonal gives the probability of each two-qubit outcome:
@@ -176,7 +236,7 @@ state has purity 1 and concurrence below 1.
 
 ```
 index.html              markup and controls
-src/state.js            density matrix, concurrence, purity, partial trace — no DOM
+src/state.js            density matrix, concurrence, purity, partial trace, local rotation — no DOM
 src/matrix-grid.js      density matrix SVG rendering
 src/bloch-sphere.js     individual qubit Bloch sphere rendering
 src/circuit-diagram.js  H + CNOT circuit diagram
@@ -195,9 +255,10 @@ Some directions the current structure supports:
 - Amplitude damping alongside dephasing (relaxation toward \|00⟩ rather than
   loss of coherence). This moves the diagonal, unlike dephasing, and would
   visibly displace the Bloch vectors toward the south pole.
-- Complex phases, requiring a second grid for the imaginary part or a hue
-  channel in each cell. Complex off-diagonal entries would also produce
-  non-zero x and y Bloch vector components, making the spheres more dynamic.
+- Complex phases in the density matrix, requiring a second grid for the
+  imaginary part or a hue channel in each cell.
+- Rotation of q1 as well as q0, allowing independent local operations on
+  both qubits and a richer exploration of the LU orbit of each Bell state.
 - Measurement in a rotated basis, showing the interference that distinguishes a
   superposition from a mixture.
 

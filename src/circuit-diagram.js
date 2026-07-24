@@ -1,16 +1,18 @@
 const SVG_NS = 'http://www.w3.org/2000/svg';
 
-const W = 540;
+const W = 680;
 const H = 90;
-const Y0 = 28;   // q0 wire
-const Y1 = 62;   // q1 wire
+const Y0 = 28;             // q0 wire
+const Y1 = 62;             // q1 wire
 const X_WIRE_START = 80;
-const X_H = 178;    // H gate centre
-const X_CNOT = 312; // CNOT centre
-const X_WIRE_END = 416;
-const X_BRACKET = 430;
-const X_OUT = 494;
+const X_H = 178;           // H gate centre
+const X_CNOT = 308;        // CNOT centre
+const X_WIRE_END = 630;
+const X_BRACKET = 415;     // Bell-state output bracket
+const X_OUT = 460;         // Bell-state label
+const X_RY = 555;          // Rᵧ gate centre (local rotation, after Bell state)
 const GATE_W = 34;
+const RY_GATE_W = 48;
 const GATE_H = 28;
 const XOR_R = 12;
 
@@ -38,7 +40,7 @@ export function createCircuitDiagram(container) {
     width: '100%',
     class: 'circuit-svg',
     role: 'img',
-    'aria-label': 'H + CNOT quantum circuit',
+    'aria-label': 'H + CNOT quantum circuit with local rotation on q0',
   });
 
   // Wires
@@ -55,8 +57,7 @@ export function createCircuitDiagram(container) {
 
   // CNOT: vertical line from control to XOR edge
   svg.appendChild(el('line', {
-    x1: X_CNOT, y1: Y0,
-    x2: X_CNOT, y2: Y1 - XOR_R,
+    x1: X_CNOT, y1: Y0, x2: X_CNOT, y2: Y1 - XOR_R,
     class: 'circuit-wire',
   }));
 
@@ -74,13 +75,23 @@ export function createCircuitDiagram(container) {
     class: 'circuit-wire',
   }));
 
-  // Output bracket (vertical line + ticks)
+  // Bracket marking the Bell-state preparation boundary
   const TICK = 8;
   svg.appendChild(el('line', { x1: X_BRACKET, y1: Y0, x2: X_BRACKET, y2: Y1, class: 'circuit-bracket' }));
   svg.appendChild(el('line', { x1: X_BRACKET, y1: Y0, x2: X_BRACKET + TICK, y2: Y0, class: 'circuit-bracket' }));
   svg.appendChild(el('line', { x1: X_BRACKET, y1: Y1, x2: X_BRACKET + TICK, y2: Y1, class: 'circuit-bracket' }));
 
-  // Wire qubit name labels (faint, left edge)
+  // Rᵧ(α) gate on q0 — local operation, sits visibly after the Bell-state bracket
+  const ryGroup = el('g');
+  ryGroup.appendChild(el('rect', {
+    x: X_RY - RY_GATE_W / 2, y: Y0 - GATE_H / 2,
+    width: RY_GATE_W, height: GATE_H,
+    class: 'circuit-gate',
+  }));
+  ryGroup.appendChild(txt(X_RY, Y0, 'Ry', { class: 'circuit-gate-label' }));
+  svg.appendChild(ryGroup);
+
+  // Wire qubit name labels
   svg.appendChild(txt(14, Y0, 'q0', { class: 'circuit-qubit-label' }));
   svg.appendChild(txt(14, Y1, 'q1', { class: 'circuit-qubit-label' }));
 
@@ -95,9 +106,11 @@ export function createCircuitDiagram(container) {
 
   container.appendChild(svg);
 
-  return function draw({ q0, q1, label }) {
+  return function draw({ q0, q1, label, alpha }) {
     inLabel0.textContent = `|${q0}⟩`;
     inLabel1.textContent = `|${q1}⟩`;
     outLabel.textContent = label;
+    // Dim the Ry gate when alpha is zero (acting as identity)
+    ryGroup.setAttribute('opacity', Math.abs(alpha) < 0.005 ? '0.28' : '1');
   };
 }
